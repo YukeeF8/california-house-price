@@ -14,82 +14,9 @@ Markdown
 
 ---
 
-## 二、 完整代码
 
-如果你想在 Jupyter Notebook、Google Colab 或本地 `.py` 脚本中运行，直接复制并运行 加州房价.py 即可
 
-```python
-# ==========================================
-# 1. 导入工具库与加载数据
-# ==========================================
-import pandas as pd
-from sklearn.datasets import fetch_california_housing
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_absolute_error, r2_score
-
-print("【1】正在从网上下载并加载加州房价数据...")
-california = fetch_california_housing(as_frame=True)
-df = california.data
-df['MedHouseValue'] = california.target  # 添加目标列：房价中位数
-
-# ==========================================
-# 2. 划分特征 (X) 与目标值 (y)
-# ==========================================
-X = df.drop(columns=['MedHouseValue'])
-y = df['MedHouseValue']
-
-# ==========================================
-# 3. 划分训练集与测试集 (80% vs 20%)
-# ==========================================
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-print(f"【2】数据集划分完毕。训练集：{X_train.shape[0]}行，测试集：{X_test.shape[0]}行。")
-
-# ==========================================
-# 4. 数据标准化 (特征缩放)
-# ==========================================
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-print("【3】数据特征标准化缩放完成。")
-
-# ==========================================
-# 5. 构建并训练随机森林模型
-# ==========================================
-print("【4】正在构建包含 100 棵树的随机森林，并开始训练（拟合）...")
-model = RandomForestRegressor(n_estimators=100, random_state=42)
-model.fit(X_train_scaled, y_train)
-print("     模型训练完毕！")
-
-# ==========================================
-# 6. 模型评估 (期末考试打分)
-# ==========================================
-y_pred = model.predict(X_test_scaled)
-r2 = r2_score(y_test, y_pred)
-mae = mean_absolute_error(y_test, y_pred)
-
-print(f"\n📊 【5】模型期末考试成绩单：")
-print(f"   - R² 决定系数: {r2:.4f}")
-print(f"     (含义：模型看穿并解释了测试集中 {r2*100:.1f}% 的房价波动原因)")
-print(f"   - 平均绝对误差 (MAE): {mae:.4f}")
-print(f"     (含义：平均下来，模型每套房子的预测偏离了真实房价约 {mae*10:.2f} 万美元)")
-
-# ==========================================
-# 7. 全新未知样本预测
-# ==========================================
-print("\n🔮 【6】尝试对一个全新街区的未知样本进行房价预测...")
-# 假定新街区的 8 个特征指标：[MedInc, HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude]
-new_house = [[8.0, 30, 6, 1, 500, 300, 37.8, -122.2]]
-
-# 先用训练集同样的 scaler 标准化，再送入模型预测
-new_house_scaled = scaler.transform(new_house)
-predict_price = model.predict(new_house_scaled)
-
-print(f"   - 该全新街区的预测房价中位数为: {predict_price[0]:.4f} (十万美元)")
-print(f"   - 💰 折合实际价格: ${predict_price[0]*100000:,.2f} 美元")
-
-# 三、原理解析
+# 二、代码与算法解析
 
 ### 1. 导入工具库
 所有工具均来自 Python 机器学习标配库 **sklearn（Scikit-learn）**。它负责数据下载、数据集切分、数据标准化缩放、随机森林算法建模以及模型效果评估。
